@@ -3,31 +3,51 @@ import { CharacterSource } from "./character-source";
 import { config } from "../core/config";
 
 export class PokemonClient extends CharacterSource {
+  /**
+   * Fetch Pokémon data from the API.
+   * @param limit - The maximum number of items to fetch.
+   * @param offset - The offset to start fetching from.
+   * @returns The fetched Pokémon data.
+   */
   async fetchData(limit: number = 100000, offset: number = 0): Promise<any> {
-    const pokemonList = await (
-      await fetch(config.pokeAPI.endpoint + `pokemon/?limit=${limit}&offset=${offset}`)
-    ).json();
+    try {
+      const endpoint = `${config.pokeAPI.endpoint}pokemon/?limit=${limit}&offset=${offset}`;
+      const allPokemon = await this.fetchPaginatedData(endpoint, limit, (data) => Math.ceil(data.count / limit));
 
-    // When trying to fetch all data we get rejected by the server
-    // so we ocess in batches of 200 with 20ms delay between batches
-    const batchSize = 200;
-    const delay = 20;
-    const pokemonDetails = [];
+      // When trying to fetch all data we get rejected by the server
+      // so we ocess in batches of 200 with 20ms delay between batches
+      const batchSize = 200;
+      const delay = 20;
+      const pokemonDetails = [];
 
-    for (let i = 0; i < pokemonList.results.length; i += batchSize) {
-      const batch = pokemonList.results.slice(i, i + batchSize);
-      const batchPromises = batch.map(async (pokemon: { name: string; url: string }) => await fetch(pokemon.url));
+      for (let i = 0; i < allPokemon.length; i += batchSize) {
+        const batch = allPokemon.slice(i, i + batchSize);
+        const batchPromises = batch.map(async (pokemon: { name: string; url: string }) => {
+          try {
+            const response = await fetch(pokemon.url);
+            return await response.json();
+          } catch (error) {
+            console.error(`Error fetching details for ${pokemon.name}:`, error);
+            return null;
+          }
+        });
 
-      const batchResponses = await Promise.all(batchPromises);
-      pokemonDetails.push(...(await Promise.all(batchResponses.map((response: any) => response.json()))));
+        // Waiting for all batch promises to resolve
+        const batchResponses = await Promise.all(batchPromises);
+        pokemonDetails.push(...batchResponses.filter((detail) => detail !== null));
 
-      if (i + batchSize < pokemonList.results.length) {
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        if (i + batchSize < allPokemon.length) {
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
       }
-    }
 
-    return pokemonDetails;
+      return pokemonDetails;
+    } catch (error) {
+      console.error("Error fetching Pokémon data:", error);
+      return [];
+    }
   }
+
   normalizeData(rawData: any): Character {
     const types: string[] = [];
     if (!Array.isArray(rawData.types)) {

@@ -4,29 +4,30 @@ import { config } from "../core/config";
 
 export class StarWarsClient extends CharacterSource {
   async fetchData(maxPages: number = 9): Promise<any> {
-    const requests = Array(maxPages)
-      .fill(0)
-      .map((_, i) => fetch(config.swapi.endpoint + "people/?page=" + (i + 1)));
+    try {
+      const allCharacters = await this.fetchPaginatedData(
+        config.swapi.endpoint + "people",
+        maxPages,
+        () => maxPages // SWAPI uses a fixed number of pages
+      );
 
-    const responses = await Promise.all(requests);
-    const jsonResponses = await Promise.all(responses.map((response) => response.json()));
-
-    const data: { results: any[] } = {
-      results: [],
-    };
-    for (const jsonResponse of jsonResponses) {
-      data.results.push(...jsonResponse.results);
-    }
-
-    for (const character of data.results) {
-      if (character.species.length) {
-        const speciesPromises = character.species.map((url: string) => fetch(url).then((res) => res.json()));
-        const speciesData = await Promise.all(speciesPromises);
-        character.species = speciesData.map((species) => species.name);
+      // Fetch species data for each character
+      for (const character of allCharacters) {
+        if (character.species.length) {
+          try {
+            const speciesPromises = character.species.map((url: string) => fetch(url).then((res) => res.json()));
+            const speciesData = await Promise.all(speciesPromises);
+            character.species = speciesData.map((species) => species.name);
+          } catch (error) {
+            console.error(`Error fetching species for ${character.name}:`, error);
+          }
+        }
       }
-    }
 
-    return data.results;
+      return allCharacters;
+    } catch (error) {
+      console.error("Error fetching Star Wars data:", error);
+    }
   }
 
   normalizeData(rawData: any): Character {
