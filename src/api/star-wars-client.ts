@@ -3,8 +3,8 @@ import { CharacterSource } from "./character-source";
 import { config } from "../core/config";
 
 export class StarWarsClient extends CharacterSource {
-  async fetchData(): Promise<any> {
-    const requests = Array(9)
+  async fetchData(maxPages: number = 9): Promise<any> {
+    const requests = Array(maxPages)
       .fill(0)
       .map((_, i) => fetch(config.swapi.endpoint + "people/?page=" + (i + 1)));
 
