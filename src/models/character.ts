@@ -3,4 +3,4 @@ export interface Character {
   origin: string;
   species: string;
   additional_attribute: string | number;
-} 
+}
