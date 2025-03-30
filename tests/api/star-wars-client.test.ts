@@ -2,11 +2,7 @@ import { StarWarsClient } from "../../src/api";
 import { Character } from "../../src/models";
 
 jest.mock("../../src/core/config", () => ({
-  config: {
-    swapi: {
-      endpoint: "https://swapi.dev/api/",
-    },
-  },
+  config: { swapi: { endpoint: "https://swapi.dev/api/" } },
 }));
 
 describe("StarWarsClient", () => {
@@ -20,7 +16,7 @@ describe("StarWarsClient", () => {
     const data = await client.fetchData(1);
     expect(data).toBeDefined();
     expect(Array.isArray(data)).toBe(true);
-  });
+  }, 30000);
 
   it("should normalize data correctly", () => {
     const rawData = {

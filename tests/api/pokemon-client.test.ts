@@ -2,11 +2,7 @@ import { PokemonClient } from "../../src/api/pokemon-client";
 import { Character } from "../../src/models";
 
 jest.mock("../../src/core/config", () => ({
-  config: {
-    pokeAPI: {
-      endpoint: "https://pokeapi.co/api/v2/",
-    },
-  },
+  config: { pokeAPI: { endpoint: "https://pokeapi.co/api/v2/" } },
 }));
 
 describe("PokemonClient", () => {
@@ -23,17 +19,10 @@ describe("PokemonClient", () => {
   });
 
   it("should normalize data correctly", () => {
-    const rawData = {
-      name: "pikachu",
-      types: [{ type: { name: "electric" } }],
-      base_experience: 112,
-    };
+    const rawData = { name: "pikachu", types: [{ type: { name: "electric" } }], base_experience: 112 };
+
     const character: Character = client.normalizeData(rawData);
-    expect(character).toEqual({
-      name: "pikachu",
-      origin: "Pokémon",
-      species: "Electric",
-      additional_attribute: 112,
-    });
+
+    expect(character).toEqual({ name: "pikachu", origin: "Pokémon", species: "Electric", additional_attribute: 112 });
   });
 });

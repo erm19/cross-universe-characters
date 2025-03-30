@@ -3,14 +3,16 @@ import { CharacterSource } from "./character-source";
 import { config } from "../core/config";
 
 export class RickAndMortyClient extends CharacterSource {
-  async fetchData(): Promise<any> {
+  async fetchData(maxPages: number = 100000): Promise<any> {
     const initialResponse = fetch(config.rickAndMortyAPI.endpoint + "character");
     const initialData = await (await initialResponse).json();
     const totalPages = initialData.info.pages;
 
+    const pagesToFetch = Math.min(totalPages, maxPages);
+
     // Create an array of promises for each page
     const pagePromises = [];
-    for (let page = 2; page <= totalPages; page++) {
+    for (let page = 2; page <= pagesToFetch; page++) {
       pagePromises.push(fetch(config.rickAndMortyAPI.endpoint + `character?page=${page}`));
     }
 
