@@ -1,4 +1,4 @@
-import { Character } from "models";
+import { Character } from "./models";
 import { CharacterSourceFactory } from "./factory/CharacterSourceFactory";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
@@ -8,10 +8,11 @@ async function main() {
   const starWarsClient = CharacterSourceFactory.createSource("starwars");
   const rickAndMortyClient = CharacterSourceFactory.createSource("rickandmorty");
 
-  // Fetch and normalize data
-  const pokemonData = (await pokemonClient.fetchData()).map(pokemonClient.normalizeData);
-  const starWarsData = (await starWarsClient.fetchData()).map(starWarsClient.normalizeData);
-  const rickAndMortyData = (await rickAndMortyClient.fetchData()).map(rickAndMortyClient.normalizeData);
+  const [pokemonData, starWarsData, rickAndMortyData] = await Promise.all([
+    pokemonClient.fetchData().then((data) => data.map(pokemonClient.normalizeData)),
+    starWarsClient.fetchData().then((data) => data.map(starWarsClient.normalizeData)),
+    rickAndMortyClient.fetchData().then((data) => data.map(rickAndMortyClient.normalizeData)),
+  ]);
 
   const aggregatedData: Character[] = [...pokemonData, ...starWarsData, ...rickAndMortyData];
 
