@@ -19,7 +19,7 @@ export class PokemonClient extends CharacterSource {
       const batchPromises = batch.map(async (pokemon: { name: string; url: string }) => await fetch(pokemon.url));
 
       const batchResponses = await Promise.all(batchPromises);
-      pokemonDetails.push(...(await Promise.all(batchResponses)));
+      pokemonDetails.push(...(await Promise.all(batchResponses.map((response: any) => response.json()))));
 
       if (i + batchSize < pokemonList.results.length) {
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -29,7 +29,13 @@ export class PokemonClient extends CharacterSource {
     return pokemonDetails;
   }
   normalizeData(rawData: any): Character {
-    const types: string[] = rawData.types.map((t: any) => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1));
+    const types: string[] = [];
+    if (!Array.isArray(rawData.types)) {
+      const pokeType = rawData.types?.type?.name || "";
+      types.push(pokeType.charAt(0).toUpperCase() + pokeType.slice(1));
+    } else {
+      types.push(...rawData.types.map((t: any) => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)));
+    }
 
     return {
       name: rawData.name,
