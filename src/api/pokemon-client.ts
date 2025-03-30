@@ -1,6 +1,6 @@
-import { Character } from "../models/character";
+import { Character } from "../models";
 import { CharacterSource } from "./character-source";
-import { config } from "../config/config";
+import { config } from "../core/config";
 
 export class PokemonClient extends CharacterSource {
   async fetchData(limit: number = 100000, offset: number = 0): Promise<any> {

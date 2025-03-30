@@ -1,4 +1,4 @@
-import { Character } from "../models/character";
+import { Character } from "../models";
 
 export abstract class CharacterSource {
   // Method to retrieve raw data from the API
