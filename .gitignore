@@ -1,6 +1,5 @@
 node_modules
 *.log
-*.md
 *.txt
 
 *.csv
@@ -9,4 +8,5 @@ node_modules
 *.docx
 
 dist/
+data/
 nodemon.json
