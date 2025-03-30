@@ -28,7 +28,6 @@ async function main() {
     // Write the JSON data to a local file
     const outputPath = join(dataDir, "output.json");
     await writeFile(outputPath, jsonData, "utf8");
-    console.log(`Data written to ${outputPath}`);
     console.log(jsonData);
   } catch (error) {
     console.error("Error writing data to file:", error);
