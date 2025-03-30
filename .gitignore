@@ -1,0 +1,12 @@
+node_modules
+*.log
+*.md
+*.txt
+
+*.csv
+*.xlsx
+*.xls
+*.docx
+
+dist/
+nodemon.json
