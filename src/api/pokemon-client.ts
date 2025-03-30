@@ -2,7 +2,7 @@ import { Character } from "../models/character";
 import { CharacterSource } from "./character-source";
 import { config } from "../config/config";
 
-export class PokemonSource extends CharacterSource {
+export class PokemonClient extends CharacterSource {
   async fetchData(limit: number = 100000, offset: number = 0): Promise<any> {
     const pokemonList = await (
       await fetch(config.pokeAPI.endpoint + `pokemon/?limit=${limit}&offset=${offset}`)

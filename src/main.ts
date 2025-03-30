@@ -1,14 +1,14 @@
-import { PokemonSource, StarWarsSource, RickAndMortyClient } from "./api";
+import { PokemonClient, StarWarsClient, RickAndMortyClient } from "./api";
 
 async function main() {
-  //   const pokemonSource = new PokemonSource();
-  //   const pokemon = await pokemonSource.fetchData();
-  //   const normalizedPokemon = pokemon.map((p: any) => pokemonSource.normalizeData(p));
+  //   const pokemonClient = new PokemonClient();
+  //   const pokemon = await pokemonClient.fetchData();
+  //   const normalizedPokemon = pokemon.map((p: any) => pokemonClient.normalizeData(p));
   //   console.log(normalizedPokemon);
 
-  // const starWarsSource = new StarWarsSource();
-  // const starWars = await starWarsSource.fetchData();
-  // const normalizedStarWars = starWars.map((s: any) => starWarsSource.normalizeData(s));
+  // const starWarsClient = new StarWarsClient();
+  // const starWars = await starWarsClient.fetchData();
+  // const normalizedStarWars = starWars.map((s: any) => starWarsClient.normalizeData(s));
   // console.log(normalizedStarWars);
 
   const rickAndMortyClient = new RickAndMortyClient();

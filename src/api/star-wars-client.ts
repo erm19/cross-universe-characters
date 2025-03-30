@@ -2,7 +2,7 @@ import { Character } from "../models/character";
 import { CharacterSource } from "./character-source";
 import { config } from "../config/config";
 
-export class StarWarsSource extends CharacterSource {
+export class StarWarsClient extends CharacterSource {
   async fetchData(): Promise<any> {
     const requests = Array(9)
       .fill(0)
