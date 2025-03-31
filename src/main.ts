@@ -22,7 +22,7 @@ async function main() {
 
   try {
     // Ensure the 'data' directory exists
-    const dataDir = join(__dirname, "../data");
+    const dataDir = join(__dirname, "..", "data");
     await mkdir(dataDir, { recursive: true });
 
     // Write the JSON data to a local file
