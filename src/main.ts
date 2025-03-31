@@ -1,7 +1,6 @@
 import { Character } from "./models";
 import { CharacterSourceFactory } from "./factory/CharacterSourceFactory";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import { writeToFile } from "./utils/file-writer";
 
 async function main() {
   const pokemonClient = CharacterSourceFactory.createSource("pokemon");
@@ -20,18 +19,7 @@ async function main() {
 
   const jsonData = JSON.stringify(aggregatedData, null, 2);
 
-  try {
-    // Ensure the 'data' directory exists
-    const dataDir = join(__dirname, "..", "data");
-    await mkdir(dataDir, { recursive: true });
-
-    // Write the JSON data to a local file
-    const outputPath = join(dataDir, "output.json");
-    await writeFile(outputPath, jsonData, "utf8");
-    console.log(jsonData);
-  } catch (error) {
-    console.error("Error writing data to file:", error);
-  }
+  await writeToFile(jsonData, "data/characters.json");
 }
 
 main();
