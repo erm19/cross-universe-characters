@@ -21,9 +21,11 @@ describe("Data Aggregation and Sorting", () => {
     const starWarsClient = CharacterSourceFactory.createSource("starwars");
     const rickAndMortyClient = CharacterSourceFactory.createSource("rickandmorty");
 
-    const pokemonData = (await pokemonClient.fetchData(10)).map(pokemonClient.normalizeData);
-    const starWarsData = (await starWarsClient.fetchData(1)).map(starWarsClient.normalizeData);
-    const rickAndMortyData = (await rickAndMortyClient.fetchData(1)).map(rickAndMortyClient.normalizeData);
+    const [pokemonData, starWarsData, rickAndMortyData] = await Promise.all([
+      pokemonClient.fetchData(10).then((data) => data.map(pokemonClient.normalizeData)),
+      starWarsClient.fetchData(1).then((data) => data.map(starWarsClient.normalizeData)),
+      rickAndMortyClient.fetchData(1).then((data) => data.map(rickAndMortyClient.normalizeData)),
+    ]);
 
     const aggregatedData: Character[] = [...pokemonData, ...starWarsData, ...rickAndMortyData];
     aggregatedData.sort((a, b) => a.name.localeCompare(b.name));
